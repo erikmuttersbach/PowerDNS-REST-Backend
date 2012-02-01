@@ -21,20 +21,36 @@
 *.o
 .deps
 .libs
-pdns/Makefile.in
+modules/Makefile
 modules/Makefile.in
 modules/*/Makefile
 modules/*/Makefile.in
 codedocs/Makefile
 codedocs/Makefile.in
-pdns/backends/Makefile.in
-pdns/backends/bind/Makefile.in
-modules/restbackend/
 /config.log
 /config.status
 /libtool
+#	pdns/Makefile
+#	pdns/Makefile.in
+#	pdns/backends/Makefile
+#	pdns/backends/Makefile.in
+#	pdns/backends/bind/Makefile
+#	pdns/backends/bind/Makefile.in
+#	pdns/backends/bind/bindlexer.c
+#	pdns/backends/bind/bindparser.cc
+#	pdns/backends/bind/bindparser.h
+#	pdns/backends/bind/bindparser.output
+#	pdns/backends/bind/dnslabeltext.cc
+#	pdns/backends/bind/zone2ldap
+#	pdns/backends/bind/zone2sql
+#	pdns/dnslabeltext.cc
+#	pdns/dnsreplay
+#	pdns/pdns
+#	pdns/pdns_control
+#	pdns/pdns_server
+#	pdns/pdnssec
+#	pdns/precursor
 
-# Eclipse CPP
-.cproject
+
 .project
-
+.cproject

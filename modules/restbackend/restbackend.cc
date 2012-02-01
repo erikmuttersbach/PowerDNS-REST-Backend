@@ -141,6 +141,12 @@ bool RestBackend::get(DNSResourceRecord &rr) {
 		// Read the response headers, which are terminated by a blank line.
 		boost::asio::read_until(socket, response, "\r\n\r\n");
 
+		// Process the response headers.
+		std::string header;
+		while (std::getline(response_stream, header) && header != "\r") {
+
+		}
+
 		// Write whatever content we already have to output.
 		std::stringstream responseContent;
 		if (response.size() > 0) {
