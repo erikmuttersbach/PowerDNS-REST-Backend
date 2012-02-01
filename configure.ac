@@ -600,4 +600,4 @@ modules/odbcbackend/Makefile modules/mongodbbackend/Makefile \
 modules/gpgsqlbackend/Makefile modules/ldapbackend/Makefile \
 modules/gsqlitebackend/Makefile modules/gsqlite3backend/Makefile \
 modules/goraclebackend/Makefile modules/mydnsbackend/Makefile \
-modules/luabackend/Makefile)
+modules/luabackend/Makefile modules/restbackend/Makefile)
