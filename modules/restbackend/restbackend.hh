@@ -2,6 +2,7 @@
 #define RESTBACKEND_HH
 
 #include <string>
+#include <vector>
 #include <sys/types.h>
 #include <regex.h>
 #include <boost/shared_ptr.hpp>
@@ -9,6 +10,7 @@
 #include "pdns/namespaces.hh"
 
 class QueryCtx;
+class ListCtx;
 class Regex;
 
 class RestBackend: public DNSBackend {
@@ -20,13 +22,16 @@ public:
 	bool get(DNSResourceRecord &rr);
 
 private:
+	cJSON *performRequest(string &fullUri, string &content);
+	DNSResourceRecord getRR(cJSON* json);
+
 	string service;
 	string uri;
 	string host;
 	Regex *regex;
 	bool log;
 
-	QueryCtx *ctx;
+	vector<DNSResourceRecord> rrs;
 
 	static boost::asio::io_service io_service;
 	boost::asio::ip::tcp::tcp::resolver::iterator endpoint_iterator;
