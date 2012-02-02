@@ -24,6 +24,7 @@ RestBackend::RestBackend(const string &suffix) {
 		setArgPrefix("rest");
 		this->service = getArg("service");
 		this->regex = getArg("regex").empty() ? 0 : new Regex(getArg("regex"));
+		this->log = ::arg().mustDo("query-logging") || mustDo("logging-query");
 	}
 	catch(const ArgException &A) {
 		L<<Logger::Error<<LOGID"Fatal argument error: "<<A.reason<<endl;
@@ -77,7 +78,9 @@ void RestBackend::lookup(const QType &qtype, const string &qname, DNSPacket *p, 
 		 this->ctx->remoteIp = p->getRemote();
 	 }
 	 else {
-		 L<<Logger::Warning<< qname+";"+qtype.getName() << " does not match regex " << endl;
+		 if(this->log) {
+			 L<<Logger::Warning<< qname+";"+qtype.getName() << " does not match regex " << endl;
+		 }
 
 		 if(this->ctx) {
 			 this->ctx = 0;
@@ -102,9 +105,11 @@ bool RestBackend::get(DNSResourceRecord &rr) {
 	content << "realRemoteIp=" << this->ctx->realRemoteIp << "\r\n";
 	string contentStr = content.str();
 
-	cout << "sending request " << contentStr << endl;
-
 	try {
+		if(this->log) {
+			L<<Logger::Info << "Requesting "+this->ctx->qtype.getName() << " for domain " << this->ctx->qname << endl;
+		}
+
 		// Create socket and request
 		tcp::socket socket(this->io_service);
 		boost::asio::connect(socket, this->endpoint_iterator);
@@ -243,18 +248,13 @@ DNSBackend *RestFactory::make(const string &suffix) {
 }
 
 void RestFactory::declareArguments(const string &suffix) {
-	declare(suffix, "service", "HTTP url to the REST service", "http://127.0.0.1/pdns");
-	declare(suffix, "regex","Only queries that match this regular expression will be resolved by this backend",".*xfdattacker.com;.*");
+	declare(suffix, "service", "HTTP url to the REST service", "");
+	declare(suffix, "regex","Only queries that match this regular expression will be resolved by this backend","");
 }
 
 // RestLoader
 RestLoader::RestLoader() {
 	BackendMakers().report(new RestFactory);
-
-	L
-			<< Logger::Info
-			<< " [RestBackend] This is the restbackend ("__DATE__", "__TIME__") reporting"
-			<< endl;
 }
 
 static RestLoader restLoader;

@@ -8,13 +8,6 @@
 
 #include "pdns/namespaces.hh"
 
-/**
- * TODO:
- *  - regex
- *  - list
- *  - test config parameters
- *
- */
 class QueryCtx;
 class Regex;
 
@@ -23,8 +16,7 @@ public:
 	RestBackend(const string &suffix);
 	~RestBackend();
 	bool list(const string &target, int domain_id);
-	void lookup(const QType &type, const string &qdomain, DNSPacket *p,
-			int zoneId);
+	void lookup(const QType &type, const string &qdomain, DNSPacket *p, int zoneId);
 	bool get(DNSResourceRecord &rr);
 
 private:
@@ -32,6 +24,7 @@ private:
 	string uri;
 	string host;
 	Regex *regex;
+	bool log;
 
 	QueryCtx *ctx;
 
