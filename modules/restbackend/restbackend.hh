@@ -11,8 +11,8 @@
 /**
  * TODO:
  *  - regex
- *  - destructor
  *  - list
+ *  - test config parameters
  *
  */
 class QueryCtx;
@@ -21,6 +21,7 @@ class Regex;
 class RestBackend: public DNSBackend {
 public:
 	RestBackend(const string &suffix);
+	~RestBackend();
 	bool list(const string &target, int domain_id);
 	void lookup(const QType &type, const string &qdomain, DNSPacket *p,
 			int zoneId);

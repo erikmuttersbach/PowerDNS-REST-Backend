@@ -51,7 +51,18 @@ RestBackend::RestBackend(const string &suffix) {
 	this->endpoint_iterator = resolver.resolve(query);
 }
 
+RestBackend::~RestBackend() {
+	if(this->regex) {
+		delete this->regex;
+	}
+
+	if(this->ctx) {
+		delete this->ctx;
+	}
+}
+
 bool RestBackend::list(const string &target, int domain_id) {
+	L<<Logger::Warning << LOGID"list command is currently not implemented"<< endl;
 	return false;
 }
 
@@ -66,7 +77,7 @@ void RestBackend::lookup(const QType &qtype, const string &qname, DNSPacket *p, 
 		 this->ctx->remoteIp = p->getRemote();
 	 }
 	 else {
-		 cout << qname+";"+qtype.getName() << " does not match regex " << endl;
+		 L<<Logger::Warning<< qname+";"+qtype.getName() << " does not match regex " << endl;
 
 		 if(this->ctx) {
 			 this->ctx = 0;
@@ -78,7 +89,6 @@ bool RestBackend::get(DNSResourceRecord &rr) {
 	using boost::asio::ip::tcp;
 
 	if(!this->ctx) {
-		cout << "RETURNING WITHOUT RESPONSE" << endl;
 		return false;
 	}
 
@@ -144,10 +154,10 @@ bool RestBackend::get(DNSResourceRecord &rr) {
 		// Process the response headers.
 		std::string header;
 		while (std::getline(response_stream, header) && header != "\r") {
-
+			// Discard headers
 		}
 
-		// Write whatever content we already have to output.
+		// Read whatever content we already have
 		std::stringstream responseContent;
 		if (response.size() > 0) {
 			responseContent << &response;
@@ -160,6 +170,7 @@ bool RestBackend::get(DNSResourceRecord &rr) {
 		if (error != boost::asio::error::eof)
 			throw boost::system::system_error(error);
 
+		// Parse JSON from response
 		string responseContentStr = responseContent.str();
 		cJSON* json = cJSON_Parse(responseContent.str().c_str());
 		if(!json) {
@@ -207,8 +218,10 @@ bool RestBackend::get(DNSResourceRecord &rr) {
 
 		cJSON *content = cJSON_GetObjectItem(json, "content");
 		if(content) {
-			rr.content = content->valuestring;
+			rr.content = string(content->valuestring);
 		}
+
+		cJSON_Delete(json);
 
 	} catch (std::exception& e) {
 		L<<Logger::Error<<LOGID"An error occurred creating the resource record: " << e.what() << endl;

@@ -51,6 +51,6 @@ pdns/pdns_server
 pdns/pdnssec
 pdns/precursor
 
-
+.gitignore~
 .project
 .cproject
